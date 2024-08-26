@@ -12,6 +12,9 @@ Python Program DocString Structure:
 
 import random
 
+WAGE_PER_HOUR = 20
+FULL_DAY_HOUR = 8
+
 def employee_attendance():
     '''
           Description: 
@@ -27,12 +30,29 @@ def employee_attendance():
         return "present"
     else:
         return "absent"
+    
+
+def daily_employee_wage():
+    '''
+          Description: 
+                this function is calculating daily wage of employee
+          Parameters: 
+                per_hour(int): how much amount per hour
+                daily_hours(int): how many hours working in a day
+          Return : 
+                None
+    '''
+    return WAGE_PER_HOUR*FULL_DAY_HOUR
+
 
 def main():
     print("Welcome to EmployeeWage Computation Program on Master Branch")
-    print("employee is:",employee_attendance())
+    attendance = employee_attendance()
+    if attendance == 'present':
+        print(f'Daily Employee Wage is : {daily_employee_wage()}')
+    else:
+        print(f'Daily Employee Wage is : {0}')
 
 
 if __name__=="__main__":
     main()
-
