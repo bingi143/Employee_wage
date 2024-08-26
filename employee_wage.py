@@ -29,7 +29,7 @@ def employee_attendance():
         return "absent"
 
 def main():
-    print("Welcome to EmployeeWage Computation Program on Master Branch")
+    print("Welcome to EmployeeWage Computation Program")
     print("employee is:",employee_attendance())
 
 
