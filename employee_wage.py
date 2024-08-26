@@ -28,7 +28,7 @@ def employee_attendance():
     return random.randint(0,2)
     
 
-def daily_employee_wage(hours_per_day):
+def daily_employee_wage(status,hours_per_day):
     '''
           Description: 
                 this function is calculating daily wage of employee
@@ -37,7 +37,14 @@ def daily_employee_wage(hours_per_day):
           Return : 
                 Returns the wage for an employee
     '''
-    return WAGE_PER_HOUR*hours_per_day
+    match status:
+        case 1:
+            return WAGE_PER_HOUR*hours_per_day
+        case 2:
+            return WAGE_PER_HOUR* hours_per_day
+        case 0:
+            return 0
+
 
 
 def main():
@@ -45,10 +52,10 @@ def main():
     attendance = employee_attendance()
     if attendance == 1:
         print(f'Employee is FULLTIME Employee')
-        print(f'Daily Employee Wage is : {daily_employee_wage(FULL_DAY_HOUR)}')
+        print(f'Daily Employee Wage is : {daily_employee_wage(1,FULL_DAY_HOUR)}')
     elif attendance ==2:
         print(f'Employee is PARTTIME Employee')
-        print(f'Daily Employee Wage is : {daily_employee_wage(PART_TIME_HOUR)}')
+        print(f'Daily Employee Wage is : {daily_employee_wage(2,PART_TIME_HOUR)}')
     else:
         print(f'Employee is Absent')
         print(f'Daily Employee Wage is : {0}')
