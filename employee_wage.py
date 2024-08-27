@@ -15,7 +15,7 @@ import random
 WAGE_PER_HOUR = 20
 FULL_DAY_HOUR = 8
 PART_TIME_HOUR = 4
-WORK_DAYS_PER_MONTH=20
+TOTAL_WORK_DAYS_PER_MONTH=20
 
 def employee_attendance():
     '''
@@ -58,7 +58,7 @@ def employee_monthly_wage():
     '''
     monthly_wage=0
     wage_list_each_day=[]
-    for day in range(WORK_DAYS_PER_MONTH):
+    for day in range(TOTAL_WORK_DAYS_PER_MONTH):
         attendance=employee_attendance()
         if attendance == 1:
             monthly_wage+=daily_employee_wage(1,FULL_DAY_HOUR)
