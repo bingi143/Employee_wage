@@ -83,7 +83,7 @@ def employee_monthly_wage():
 
 
 def main():
-    print("Welcome to EmployeeWage Computation Program on Master Branch")
+    print("Welcome to EmployeeWage Computation ")
     total_wage,list_each_days_wage=employee_monthly_wage()
     print("total monthly wage of employee is:",total_wage)
     print("list of each days earning",list_each_days_wage)
