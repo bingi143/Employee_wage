@@ -15,7 +15,7 @@ import random
 WAGE_PER_HOUR = 20
 FULL_DAY_HOUR = 8
 PART_TIME_HOUR = 4
-WORK_DAYS=20
+WORK_DAYS_PER_MONTH=20
 
 def employee_attendance():
     '''
@@ -29,41 +29,57 @@ def employee_attendance():
     return random.randint(0,2)
     
 
-def monthly_employee_wage(status,hours_per_day):
+def daily_employee_wage(status,hours_per_day):
     '''
           Description: 
-                this function is calculating monthly wage for employee
+                this function is calculating daily wage of employee
           Parameters: 
-               status(int): 1:- employee is full time employee
-                            2:- employeee is part time employee
-                            0:- employee is absent
                hours_per_day : The number of hours the employee worked based on emp type i.e fulltime or parttime
           Return : 
                 Returns the wage for an employee
     '''
     match status:
         case 1:
-            return WAGE_PER_HOUR*hours_per_day*WORK_DAYS
+            return WAGE_PER_HOUR*hours_per_day
         case 2:
-            return WAGE_PER_HOUR* hours_per_day*WORK_DAYS
+            return WAGE_PER_HOUR* hours_per_day
         case 0:
             return 0
 
 
+def employee_monthly_wage():
+    '''
+          Description: 
+                this function is calculating monthly wage of employee
+          Parameters: 
+               None
+          Return : 
+                Returns the monthly wage for an employee
+    '''
+    monthly_wage=0
+    wage_list_each_day=[]
+    for day in range(WORK_DAYS_PER_MONTH):
+        attendance=employee_attendance()
+        if attendance == 1:
+            monthly_wage+=daily_employee_wage(1,FULL_DAY_HOUR)
+            wage_list_each_day.append(daily_employee_wage(1,FULL_DAY_HOUR))
+
+        elif attendance ==2:
+            monthly_wage+=daily_employee_wage(2,PART_TIME_HOUR)
+            wage_list_each_day.append(daily_employee_wage(2,PART_TIME_HOUR))
+
+        else:
+            wage_list_each_day.append(0)
+
+    return monthly_wage,wage_list_each_day
+
 
 def main():
-    print("****Welcome to EmployeeWage Computation****")
-    attendance = employee_attendance()
-    if attendance == 1:
-        print(f'Employee is FULLTIME Employee wage for month')
-        print(f'Monthly Employee Wage is : {monthly_employee_wage(1,FULL_DAY_HOUR)}')
-    elif attendance ==2:
-        print(f'Employee is PARTTIME Employee')
-        print(f'Monthly Employee Wage is : {monthly_employee_wage(2,PART_TIME_HOUR)}')
-    else:
-        print(f'Employee is Absent')
-        print(f'monthly Employee Wage is : {0}')
-
+    print("Welcome to EmployeeWage Computation Program on Master Branch")
+    total_wage,list_each_days_wage=employee_monthly_wage()
+    print("total monthly wage of employee is:",total_wage)
+    print("list of each days earning",list_each_days_wage)
+    
 
 if __name__=="__main__":
     main()
