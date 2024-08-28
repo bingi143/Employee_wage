@@ -93,6 +93,33 @@ class Company:
          self.total_work_hours_in_month=total_work_hour_in_month
 
 
+class EmpWageBuilder:
+
+    def __init__(self):
+        self.companies = []
+
+    def add_company(self, company):
+        self.companies.append(company)
+
+    def display_companies(self):
+        print("List of company names:")
+        for company in self.companies:
+            print(f"******************\n{company.company_name}")
+
+    def display_wages(self):
+        for company in self.companies:
+            employee_wage = EmployeeWage(company)
+            monthly_wage, working_days, working_hours, day_wise_wage = employee_wage.employee_monthly_wage()
+            
+            print("-" * 30)
+            print(f"Company Name: {company.company_name}")
+            print(f"Monthly Wage: {monthly_wage}")
+            print(f"Total Working Days: {working_days}")
+            print(f"Total Working Hours: {working_hours}")
+            print(f"Daily Wage: {day_wise_wage}")
+            print("-" * 30)
+
+
 def main():
     print("Welcome to EmployeeWage Computation ")
     companies=[]
