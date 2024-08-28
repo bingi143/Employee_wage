@@ -14,12 +14,9 @@ import random
 
 class EmployeeWage:
 
-    WAGE_PER_HOUR = 20
+    
     FULL_DAY_HOUR = 8
     PART_TIME_HOUR = 4
-    TOTAL_WORK_DAYS_PER_MONTH=20
-    TOTAL_WORK_HOURS_PER_MONTH=100
-
 
     @classmethod
     def employee_attendance(cls):
@@ -33,9 +30,8 @@ class EmployeeWage:
         '''
         return random.randint(0,2)
 
-
     @classmethod
-    def daily_employee_wage(cls,status,hours_per_day):
+    def daily_employee_wage(cls,status,hours_per_day,wage_per_hour):
         '''
                 Description: 
                     this function is calculating daily wage of employee
@@ -46,15 +42,14 @@ class EmployeeWage:
         '''
         match status:
             case 1:
-                return cls.WAGE_PER_HOUR*hours_per_day
+                return wage_per_hour*hours_per_day
             case 2:
-                return cls.WAGE_PER_HOUR* hours_per_day
+                return wage_per_hour* hours_per_day
             case 0:
                 return 0
 
-
     @classmethod
-    def employee_monthly_wage(cls):
+    def employee_monthly_wage(cls,company):
         '''
                 Description: 
                     this function is calculating monthly wage of employee
@@ -67,18 +62,18 @@ class EmployeeWage:
         wage_list_each_day=[]
         hours=0
         days=0
-        while hours<cls.TOTAL_WORK_HOURS_PER_MONTH and days<cls.TOTAL_WORK_DAYS_PER_MONTH:
-            for day in range(cls.TOTAL_WORK_DAYS_PER_MONTH):
+        while hours<company.total_work_hours_in_month and days<company.total_work_days_in_month:
+            for day in range(company.total_work_days_in_month):
                 attendance=EmployeeWage.employee_attendance()
                 if attendance == 1:
-                    monthly_wage+=EmployeeWage.daily_employee_wage(1,cls.FULL_DAY_HOUR)
-                    wage_list_each_day.append(EmployeeWage.daily_employee_wage(1,cls.FULL_DAY_HOUR))
+                    monthly_wage+=EmployeeWage.daily_employee_wage(1,cls.FULL_DAY_HOUR,company.wage_per_hour)
+                    wage_list_each_day.append(EmployeeWage.daily_employee_wage(1,cls.FULL_DAY_HOUR,company.wage_per_hour))
                     hours+=cls.FULL_DAY_HOUR
                     days+=1
 
                 elif attendance ==2:
-                    monthly_wage+=EmployeeWage.daily_employee_wage(2,cls.PART_TIME_HOUR)
-                    wage_list_each_day.append(EmployeeWage.daily_employee_wage(2,cls.PART_TIME_HOUR))
+                    monthly_wage+=EmployeeWage.daily_employee_wage(2,cls.PART_TIME_HOUR,company.wage_per_hour)
+                    wage_list_each_day.append(EmployeeWage.daily_employee_wage(2,cls.PART_TIME_HOUR,company.wage_per_hour))
                     hours+=cls.PART_TIME_HOUR
                     days+=1
 
@@ -86,17 +81,59 @@ class EmployeeWage:
                     wage_list_each_day.append(0)
                     days+=1
 
-        return monthly_wage,wage_list_each_day,hours,days
+        return monthly_wage,days,hours,wage_list_each_day
+    
+    
+class Company:
+
+    def __init__(self,company_name,wage_per_hour,total_work_days_in_month,total_work_hour_in_month):
+         self.company_name=company_name
+         self.wage_per_hour=wage_per_hour
+         self.total_work_days_in_month=total_work_days_in_month
+         self.total_work_hours_in_month=total_work_hour_in_month
 
 
 def main():
     print("Welcome to EmployeeWage Computation ")
-    total_wage,list_each_days_wage,total_hours_worked,total_days_worked=EmployeeWage.employee_monthly_wage()
-    print("Total worked hours in month:",total_hours_worked)
-    print("Total working days in month:",total_days_worked)
-    print("total monthly wage of employee is:",total_wage)
-    print("list of each days earning",list_each_days_wage)
-    
+    companies=[]
+    while True:
+        try:
+            option = int(input('''Enter           
+                    1: to add company 
+                    2: to display all companies
+                    3: to diplay wages for all companies
+                    4: to exit: '''))
+            
+            if option == 1:
+                company_name = input("Enter the company name: ")
+                total_work_days_in_month = int(input("Enter the total working days per month: "))
+                total_work_hours_in_month = int(input("Enter the maximum working hours per month: "))
+                wage_per_hour = int(input("Enter the wage per hour: "))
+                company1=Company(company_name,wage_per_hour,total_work_days_in_month,total_work_hours_in_month)
+                companies.append(company1)
+                print(f"***company {company_name} added succussfully")
+            elif option == 2:
+                print("List of company names:")
+                for company in companies:
+                    print("******************")
+                    print(f"{company.company_name}")
+
+            elif option==3:
+                for company in companies:
+                    monthly_wage, working_days, working_hours,day_wise_wage = EmployeeWage.employee_monthly_wage(company)
+            
+                    print("-"*30+"\n"+f"Company Name: {company.company_name}")
+                    print(f"Monthly Wage: {monthly_wage}")
+                    print(f"Total Working Days: {working_days}")
+                    print(f"Total Working Hours: {working_hours}")
+                    print(f"Daily wage: {day_wise_wage}"+"\n"+"-"*30)
+            elif option == 4:
+               break
+            else:
+               print("Invalid option. Please enter a number between 1 and 4.")
+        except ValueError:
+            print("Please enter correct number")
+
 
 if __name__=="__main__":
     main()
