@@ -13,158 +13,194 @@ Python Program DocString Structure:
 import random
 
 class EmployeeWage:
-
-    
     FULL_DAY_HOUR = 8
     PART_TIME_HOUR = 4
 
     @classmethod
     def employee_attendance(cls):
         '''
-                Description: 
-                    this function is displaying employee present or not
-                Parameters: 
-                    no peramters
-                Return : 
-                    returns 1 for fulltime 2 for parttime and 0 for absent
+        Description: 
+            This function checks whether the employee is present or not.
+        Parameters: 
+            No parameters.
+        Return: 
+            Returns 1 for full-time, 2 for part-time, and 0 for absent.
         '''
-        return random.randint(0,2)
+        return random.randint(0, 2)
 
     @classmethod
-    def daily_employee_wage(cls,status,hours_per_day,wage_per_hour):
+    def daily_employee_wage(cls, status, wage_per_hour):
         '''
-                Description: 
-                    this function is calculating daily wage of employee
-                Parameters: 
-                    hours_per_day : The number of hours the employee worked based on emp type i.e fulltime or parttime
-                Return : 
-                    Returns the wage for an employee
+        Description: 
+            This function calculates the daily wage of an employee.
+        Parameters: 
+            status : The attendance status of the employee (1 for full-time, 2 for part-time, 0 for absent).
+            wage_per_hour: The wage per hour for the employee.
+        Return: 
+            Returns the wage for the employee.
         '''
-        match status:
-            case 1:
-                return wage_per_hour*hours_per_day
-            case 2:
-                return wage_per_hour* hours_per_day
-            case 0:
-                return 0
+        hours_per_day = cls.FULL_DAY_HOUR if status == 1 else cls.PART_TIME_HOUR
+        return wage_per_hour * hours_per_day
 
     @classmethod
-    def employee_monthly_wage(cls,company):
+    def employee_monthly_wage(cls, company_emp_wage):
         '''
-                Description: 
-                    this function is calculating monthly wage of employee
-                Parameters: 
-                    None
-                Return : 
-                    Returns the monthly wage for an employee
+        Description: 
+            This function calculates the monthly wage of an employee.
+        Parameters: 
+            company_emp_wage: The CompanyEmpWage object containing company and employee information.
+        Return: 
+            Updates the monthly wage, total days worked, total hours worked, and a list of daily wages in the CompanyEmpWage object.
         '''
-        monthly_wage=0
-        wage_list_each_day=[]
-        hours=0
-        days=0
-        while hours<company.total_work_hours_in_month and days<company.total_work_days_in_month:
-            for day in range(company.total_work_days_in_month):
-                attendance=EmployeeWage.employee_attendance()
-                if attendance == 1:
-                    monthly_wage+=EmployeeWage.daily_employee_wage(1,cls.FULL_DAY_HOUR,company.wage_per_hour)
-                    wage_list_each_day.append(EmployeeWage.daily_employee_wage(1,cls.FULL_DAY_HOUR,company.wage_per_hour))
-                    hours+=cls.FULL_DAY_HOUR
-                    days+=1
+        company_emp_wage.monthly_wage = 0
+        company_emp_wage.wage_list_each_day = []
+        hours = 0
+        days = 0
 
-                elif attendance ==2:
-                    monthly_wage+=EmployeeWage.daily_employee_wage(2,cls.PART_TIME_HOUR,company.wage_per_hour)
-                    wage_list_each_day.append(EmployeeWage.daily_employee_wage(2,cls.PART_TIME_HOUR,company.wage_per_hour))
-                    hours+=cls.PART_TIME_HOUR
-                    days+=1
+        while hours < company_emp_wage.company.total_work_hours_in_month and days < company_emp_wage.company.total_work_days_in_month:
+            attendance = cls.employee_attendance()
+            if attendance == 1 or attendance == 2:
+                daily_wage = cls.daily_employee_wage(attendance, company_emp_wage.company.wage_per_hour)
+                company_emp_wage.monthly_wage += daily_wage
+                company_emp_wage.wage_list_each_day.append(daily_wage)
+                hours += cls.FULL_DAY_HOUR if attendance == 1 else cls.PART_TIME_HOUR
+            else:
+                company_emp_wage.wage_list_each_day.append(0)
+            days += 1
 
-                else:
-                    wage_list_each_day.append(0)
-                    days+=1
+        company_emp_wage.total_working_days = days
+        company_emp_wage.total_working_hours = hours
 
-        return monthly_wage,days,hours,wage_list_each_day
-    
-    
+
 class Company:
+    def __init__(self, company_name, wage_per_hour, total_work_days_in_month, total_work_hours_in_month):
+        self.company_name = company_name
+        self.wage_per_hour = wage_per_hour
+        self.total_work_days_in_month = total_work_days_in_month
+        self.total_work_hours_in_month = total_work_hours_in_month
+        self.employees = []
 
-    def __init__(self,company_name,wage_per_hour,total_work_days_in_month,total_work_hour_in_month):
-         self.company_name=company_name
-         self.wage_per_hour=wage_per_hour
-         self.total_work_days_in_month=total_work_days_in_month
-         self.total_work_hours_in_month=total_work_hour_in_month
+    def add_employee(self, employee_name):
+        '''
+        Description: 
+            Adds an employee to the company.
+        Parameters: 
+            employee_name: The name of the employee.
+        Return:
+            None
+        '''
+        employee_id = len(self.employees) + 1
+        self.employees.append({'id': employee_id, 'name': employee_name})
+
+
+class CompanyEmpWage:
+    def __init__(self, company, employee):
+        self.company = company
+        self.employee = employee
+        self.monthly_wage = 0
+        self.wage_list_each_day = []
+        self.total_working_days = 0
+        self.total_working_hours = 0
 
 
 class EmpWageBuilder:
-
     def __init__(self):
-        self.companies = []
+        self.company_emp_wages = []
 
-    def add_company(self, company):
-        self.companies.append(company)
+    def add_company_emp_wage(self, company_emp_wage):
+        '''
+        Description: 
+            Adds a CompanyEmpWage object to the list.
+        Parameters: 
+            company_emp_wage: The CompanyEmpWage object.
+        '''
+        self.company_emp_wages.append(company_emp_wage)
 
-    def display_companies(self):
-        print("List of company names:")
-        for company in self.companies:
-            print(f"******************\n{company.company_name}")
+    def display_companies_and_employees(self):
+        '''
+        Description: 
+            Displays all companies and their employees.
+        '''
+        for company_emp_wage in self.company_emp_wages:
+            company = company_emp_wage.company
+            print(f"Company: {company.company_name}")
+            for emp in company.employees:
+                print(f"Employee ID: {emp['id']}, Name: {emp['name']}")
+            print("-" * 30)
 
     def display_wages(self):
-        for company in self.companies:
-            employee_wage = EmployeeWage(company)
-            monthly_wage, working_days, working_hours, day_wise_wage = employee_wage.employee_monthly_wage()
-            
+        '''
+        Description: 
+            Displays the wages of all employees in all companies.
+        Parameters:
+            self
+        Return:
+            None
+        '''
+        for company_emp_wage in self.company_emp_wages:
+            EmployeeWage.employee_monthly_wage(company_emp_wage)
             print("-" * 30)
-            print(f"Company Name: {company.company_name}")
-            print(f"Monthly Wage: {monthly_wage}")
-            print(f"Total Working Days: {working_days}")
-            print(f"Total Working Hours: {working_hours}")
-            print(f"Daily Wage: {day_wise_wage}")
+            print(f"Company Name: {company_emp_wage.company.company_name}")
+            print(f"Employee Name: {company_emp_wage.employee['name']}")
+            print(f"Monthly Wage: {company_emp_wage.monthly_wage}")
+            print(f"Total Working Days: {company_emp_wage.total_working_days}")
+            print(f"Total Working Hours: {company_emp_wage.total_working_hours}")
+            print(f"Daily Wage: {company_emp_wage.wage_list_each_day}")
             print("-" * 30)
 
 
 def main():
-    print("Welcome to EmployeeWage Computation ")
-    companies=[]
+    print("Welcome to Employee Wage Computation")
+    emp_wage_builder = EmpWageBuilder()
+    
+    companies = []
+    
     while True:
         try:
             option = int(input('''Enter           
-                    1: to add company 
-                    2: to display all companies
-                    3: to diplay wages for all companies
-                    4: to exit: '''))
+                1: to add company 
+                2: to add employee to company
+                3: to display all companies and their employees
+                4: to display wages for all companies
+                5: to exit: '''))
             
             if option == 1:
                 company_name = input("Enter the company name: ")
                 total_work_days_in_month = int(input("Enter the total working days per month: "))
                 total_work_hours_in_month = int(input("Enter the maximum working hours per month: "))
                 wage_per_hour = int(input("Enter the wage per hour: "))
-                company1=Company(company_name,wage_per_hour,total_work_days_in_month,total_work_hours_in_month)
-                companies.append(company1)
-                print(f"***company {company_name} added succussfully")
+                company = Company(company_name, wage_per_hour, total_work_days_in_month, total_work_hours_in_month)
+                companies.append(company)
+                print(f"*** Company {company_name} added successfully ***")
 
             elif option == 2:
-                print("List of company names:")
+                company_name = input("Enter the company name to add an employee: ")
+                employee_name = input("Enter the employee name: ")
                 for company in companies:
-                    print("******************")
-                    print(f"{company.company_name}")
+                    if company.company_name == company_name:
+                        company.add_employee(employee_name)
+                        company_emp_wage = CompanyEmpWage(company, company.employees[-1])
+                        emp_wage_builder.add_company_emp_wage(company_emp_wage)
+                        print(f"*** Employee {employee_name} added to company {company_name} ***")
+                        break
+                else:
+                    print(f"Company {company_name} not found.")
 
-            elif option==3:
-                for company in companies:
-                    monthly_wage, working_days, working_hours,day_wise_wage = EmployeeWage.employee_monthly_wage(company)
-            
-                    print("-"*30+"\n"+f"Company Name: {company.company_name}")
-                    print(f"Monthly Wage: {monthly_wage}")
-                    print(f"Total Working Days: {working_days}")
-                    print(f"Total Working Hours: {working_hours}")
-                    print(f"Daily wage: {day_wise_wage}"+"\n"+"-"*30)
+            elif option == 3:
+                emp_wage_builder.display_companies_and_employees()
 
             elif option == 4:
-               break
+                emp_wage_builder.display_wages()
+
+            elif option == 5:
+                break
 
             else:
-               print("Invalid option. Please enter a number between 1 and 4.")
+                print("Invalid option. Please enter a number between 1 and 5.")
                
         except ValueError:
-            print("Please enter correct number")
+            print("Please enter a correct number")
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
