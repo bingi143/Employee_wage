@@ -168,6 +168,8 @@ class EmpWageBuilder:
             Adds a CompanyEmpWage object to the list.
         Parameters: 
             company_emp_wage: The CompanyEmpWage object.
+        Return:
+           None
         '''
         self.company_emp_wages.append(company_emp_wage)
 
@@ -189,6 +191,10 @@ class EmpWageBuilder:
         '''
         Description: 
             Displays all companies and their employees.
+        Parameters: 
+            None
+        Return:
+           None
         '''
         for company_emp_wage in self.company_emp_wages:
             company = company_emp_wage.company
