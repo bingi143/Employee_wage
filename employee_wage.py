@@ -112,6 +112,7 @@ def main():
                 company1=Company(company_name,wage_per_hour,total_work_days_in_month,total_work_hours_in_month)
                 companies.append(company1)
                 print(f"***company {company_name} added succussfully")
+
             elif option == 2:
                 print("List of company names:")
                 for company in companies:
@@ -127,10 +128,13 @@ def main():
                     print(f"Total Working Days: {working_days}")
                     print(f"Total Working Hours: {working_hours}")
                     print(f"Daily wage: {day_wise_wage}"+"\n"+"-"*30)
+
             elif option == 4:
                break
+
             else:
                print("Invalid option. Please enter a number between 1 and 4.")
+               
         except ValueError:
             print("Please enter correct number")
 
